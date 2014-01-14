@@ -13,7 +13,7 @@ LIBS_DIR=libs/
 
 PLOVR_DIR=${LIBS_DIR}plovr/
 PLOVR_REMOTE_DIR=http://plovr.googlecode.com/files/
-PLOVR_JAR=plovr-eba786b34df9.jar
+PLOVR_JAR=plovr-81ed862.jar
 PLOVR_JAR_PATH=${PLOVR_DIR}${PLOVR_JAR}
 
 CLOSURELIBRARY_DIR=${LIBS_DIR}closure-library/
