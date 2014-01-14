@@ -3,19 +3,19 @@
 
 
 /**
- * @param isProduction
+ * @param? isProduction
  */
 {template .main}
   <!DOCTYPE HTML>
   <html lang="en">
   <head>
-    {call .headContent}
-      {param isProduction: $isProduction /}
-    {/call}
+    {call .headContent data="all" /}
   </head>
   <body>
-    {if $isProduction}<p style="color:#f33">Production Mode!</p>{/if}
-    {call .bodyContent}{/call}
+    {if isNonnull($isProduction) and $isProduction}
+      <p style="color:#f33">Production Mode!</p>
+    {/if}
+    {call .bodyContent /}
     <script>main()</script>
   </body>
   </html>
@@ -24,18 +24,18 @@
 
 /**
  * Common items in head tag except <script>.
- * @param isProduction
- * @param excludeScript
+ * @param? isProduction
+ * @param? excludeScript
  */
 {template .headContent}
   <meta charset="UTF-8">
   <title>Plovr Sample</title>
-  {if $isProduction}
+  {if isNonnull($isProduction) and $isProduction}
     <link rel="stylesheet" href="/stylesheets/main-min.css" />
     <script src="/javascripts/main-min.js"></script>
   {else}
     <link rel="stylesheet" href="http://localhost:9810/css/plovr-sample/" />
-    {if not $excludeScript}
+    {if not isNonnull($excludeScript) or not $excludeScript}
       <script src="http://localhost:9810/compile?id=plovr-sample&mode=whitespace&pretty-print=true"></script>
     {/if}
   {/if}
@@ -64,10 +64,12 @@
   <!DOCTYPE HTML>
   <html lang="en">
   <head>
-    {call .headContent}{param excludeScript: true /}{/call}
+    {call .headContent}
+      {param excludeScript: true /}
+    {/call}
   </head>
   <body>
-    {call .bodyContent}{/call}
+    {call .bodyContent /}
   </body>
   </html>
 {/template}
