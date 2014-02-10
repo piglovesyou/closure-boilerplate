@@ -5,17 +5,17 @@
 #######################################################################
 
 USAGE_TEXT="\n
-    ---- Usage ---- \n\n\
-    setup
-    setup_plovr
-    setup_closurelibrary
-    setup_closurestylesheets
-    setup_closuretemplates
-    cleanup_lib
-    soyweb
-    serve
-    build
-    extract_msg
+    ---- Pass one of them ---- \n\n\
+    setup\n\
+    setup_plovr\n\
+    setup_closurelibrary\n\
+    setup_closurestylesheets\n\
+    setup_closuretemplates\n\
+    cleanup_lib\n\
+    soyweb\n\
+    serve\n\
+    build\n\
+    extract_msg\n\
         \n"
 
 LIBS_DIR=libs/
@@ -38,6 +38,12 @@ CLOSURETEMPLATES_REMOTE_DIR=http://closure-templates.googlecode.com/files/
 CLOSURETEMPLATES_FOR_JAVA=closure-templates-for-java-latest.zip
 CLOSURETEMPLATES_FOR_JS=closure-templates-for-javascript-latest.zip
 CLOSURETEMPLATES_MSG_EXTRACTOR=closure-templates-msg-extractor-latest.zip
+CLOSURETEMPLATES_SOY_TO_JS_JAR=SoyToJsSrcCompiler.jar 
+CLOSURETEMPLATES_SOY_MSG_EXTRACTOR_JAR=SoyMsgExtractor.jar
+
+CLOSURECOMPILER_DIR=${LIBS_DIR}closure-compiler/
+CLOSURECOMPILER_REMOTE_DIR=http://dl.google.com/closure-compiler/
+CLOSURECOMPILER_ZIP=compiler-latest.zip
 
 
 
@@ -60,22 +66,47 @@ setup_closurestylesheets() {
     wget -P ${CLOSURESTYLESHEETS_DIR} --no-check-certificate ${CLOSURESTYLESHEETS_REMOTE_DIR}${CLOSURESTYLESHEETS_JAR}
 }
 
+wget_unzip_rm() {
+    # $1: remote dir
+    # $2: zip file name
+    # $3: dir extracting into
+    wget ${1}${2}
+    mkdir -p $3
+    unzip -d $3 $2
+    rm $2
+}
+
 setup_closuretemplates() {
     rm -rf ${CLOSURETEMPLATES_DIR}
-    wget -P ${CLOSURETEMPLATES_DIR} ${CLOSURETEMPLATES_REMOTE_DIR}${CLOSURETEMPLATES_FOR_JAVA}
-    unzip -d ${CLOSURETEMPLATES_DIR}java ${CLOSURETEMPLATES_DIR}${CLOSURETEMPLATES_FOR_JAVA}
-    wget -P ${CLOSURETEMPLATES_DIR} ${CLOSURETEMPLATES_REMOTE_DIR}${CLOSURETEMPLATES_FOR_JS}
-    unzip -d ${CLOSURETEMPLATES_DIR}js ${CLOSURETEMPLATES_DIR}${CLOSURETEMPLATES_FOR_JS}
-    wget -P ${CLOSURETEMPLATES_DIR} ${CLOSURETEMPLATES_REMOTE_DIR}${CLOSURETEMPLATES_MSG_EXTRACTOR}
-    unzip -d ${CLOSURETEMPLATES_DIR}msg ${CLOSURETEMPLATES_DIR}${CLOSURETEMPLATES_MSG_EXTRACTOR}
+    wget_unzip_rm $CLOSURETEMPLATES_REMOTE_DIR $CLOSURETEMPLATES_FOR_JAVA ${CLOSURETEMPLATES_DIR}java
+    wget_unzip_rm $CLOSURETEMPLATES_REMOTE_DIR $CLOSURETEMPLATES_FOR_JS ${CLOSURETEMPLATES_DIR}js
+    wget_unzip_rm $CLOSURETEMPLATES_REMOTE_DIR $CLOSURETEMPLATES_MSG_EXTRACTOR ${CLOSURETEMPLATES_DIR}msg
+
+    # wget -P ${CLOSURETEMPLATES_DIR} ${CLOSURETEMPLATES_REMOTE_DIR}${CLOSURETEMPLATES_FOR_JAVA}
+    # unzip -d ${CLOSURETEMPLATES_DIR}java ${CLOSURETEMPLATES_DIR}${CLOSURETEMPLATES_FOR_JAVA}
+    # rm ${CLOSURETEMPLATES_DIR}${CLOSURETEMPLATES_FOR_JAVA}
+    # wget -P ${CLOSURETEMPLATES_DIR} ${CLOSURETEMPLATES_REMOTE_DIR}${CLOSURETEMPLATES_FOR_JS}
+    # unzip -d ${CLOSURETEMPLATES_DIR}js ${CLOSURETEMPLATES_DIR}${CLOSURETEMPLATES_FOR_JS}
+    # rm ${CLOSURETEMPLATES_DIR}${CLOSURETEMPLATES_FOR_JS}
+    # wget -P ${CLOSURETEMPLATES_DIR} ${CLOSURETEMPLATES_REMOTE_DIR}${CLOSURETEMPLATES_MSG_EXTRACTOR}
+    # unzip -d ${CLOSURETEMPLATES_DIR}msg ${CLOSURETEMPLATES_DIR}${CLOSURETEMPLATES_MSG_EXTRACTOR}
+    # rm ${CLOSURETEMPLATES_DIR}${CLOSURETEMPLATES_MSG_EXTRACTOR}
+}
+
+setup_closurecompiler() {
+    wget_unzip_rm $CLOSURECOMPILER_REMOTE_DIR $CLOSURECOMPILER_ZIP $CLOSURECOMPILER_DIR
+}
+
+soyfiles() {
+    find "public/app/soy/" -name "*.soy"
 }
 
 extract_msg() {
     java -jar \
-        ${SOY_MSG_EXTRACTOR_DIR}${SOY_MSG_EXTRACTOR_JAR} \
-        --outputFile extracted.xlf \
-        $(find "public/app/soy/" -name "*.soy")
-    [ $? -eq 0 ] && echo "extracted.xlf created"
+        ${CLOSURETEMPLATES_DIR}msg/${CLOSURETEMPLATES_SOY_MSG_EXTRACTOR_JAR} \
+        --sourceLocaleString en \
+        --outputFile extracted_en.xlf $(soyfiles)
+    [ $? -eq 0 ] && echo "created."
 }
 
 
@@ -88,6 +119,7 @@ case $1 in
         setup_closurelibrary
         setup_closurestylesheets
         setup_closuretemplates
+        setup_closurecompiler
         ;;
 
     cleanup_lib) cleanup_lib;;
@@ -99,6 +131,8 @@ case $1 in
     setup_closurestylesheets) setup_closurestylesheets;;
 
     setup_closuretemplates) setup_closuretemplates;;
+
+    setup_closurecompiler) setup_closurecompiler;;
 
     soyweb) java -jar ${PLOVR_JAR_PATH} soyweb --dir ./public;;
 
