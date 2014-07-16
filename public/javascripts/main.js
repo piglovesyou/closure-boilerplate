@@ -1,13 +1,13 @@
 
 goog.provide('main');
 
-goog.require('App');
+goog.require('my.App');
 
 
 /***/
 main = function() {
-  App();
-  document.write('I\'m from /javascripts/main.js.');
+  var app = new my.App();
+  app.decorate(goog.dom.getElementByClass('app'));
 };
 
 

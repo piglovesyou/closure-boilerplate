@@ -2,11 +2,45 @@
 @def BASE_FONT_SIZE 14px;
 @def LINK_TEXT_COLOR #00B7FF;
 
+html, body {
+  height: 100%;
+}
 body {
-  padding: 50px;
+  margin: 0;
   font: BASE_FONT_SIZE "Lucida Grande", Helvetica, Arial, sans-serif;
+  display: flex;
+  color: #ddd;
+  background: #ccc;
+}
+
+div {
+  background: white;
+  padding: 10px;
+}
+
+div {
+  /* border: 1px lightgray solid; */
 }
 
 a {
   color: LINK_TEXT_COLOR;
+}
+
+
+
+
+.app {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+.body {
+  display: flex;
+  flex: 1;
+}
+.list {
+  width: 200px;
+}
+.detail {
+  flex: 1;
 }

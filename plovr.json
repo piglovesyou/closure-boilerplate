@@ -11,5 +11,19 @@
   "output-file": "public/javascripts/main-min.js",
 
   "css-inputs": "public/stylesheets/main.gss",
-  "css-output-file": "public/stylesheets/main-min.css"
+  "css-output-file": "public/stylesheets/main-min.css",
+
+  "modules": {
+    "main": {
+      "inputs": "public/javascripts/main.js",
+      "deps": [] // This must be the root module.
+    },
+    "header": {
+      "inputs": [
+        "public/javascripts/header.js"
+      ],
+      "deps": "main"
+    }
+  }
+
 }
