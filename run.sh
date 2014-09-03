@@ -25,6 +25,8 @@ PLOVR_REMOTE_DIR=http://plovr.googlecode.com/files/
 PLOVR_JAR=plovr-81ed862.jar
 PLOVR_JAR_PATH=${PLOVR_DIR}${PLOVR_JAR}
 
+PLOVR_PATH=node_modules/plovr/bin/plovr
+
 CLOSURELIBRARY_DIR=${LIBS_DIR}closure-library/
 CLOSURELIBRARY_REMOTE_DIR=http://closure-library.googlecode.com/svn/trunk/
 
@@ -134,11 +136,11 @@ case $1 in
 
     setup_closurecompiler) setup_closurecompiler;;
 
-    soyweb) java -jar ${PLOVR_JAR_PATH} soyweb --dir ./public;;
+    soyweb) ${PLOVR_PATH} soyweb --dir ./public;;
 
-    serve) java -jar ${PLOVR_JAR_PATH} serve plovr.json;;
+    serve) ${PLOVR_PATH} serve plovr.json;;
 
-    build) java -jar ${PLOVR_JAR_PATH} build plovr.json;;
+    build) ${PLOVR_PATH} build plovr.json;;
 
     extract_msg) extract_msg;;
 

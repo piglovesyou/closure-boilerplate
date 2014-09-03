@@ -7,6 +7,7 @@ goog.require('goog.dom');
 goog.require('goog.ui.Component');
 goog.require('goog.style');
 goog.require('goog.module');
+goog.require('my.Yellable');
 
 
 
@@ -153,5 +154,60 @@ goog.inherits(my.Detail, my.Component);
 /** @inheritDoc */
 my.Detail.prototype.enterDocument = function () {
   goog.base(this, 'enterDocument');
-  this.getElement().innerHTML = 'yeah!!!';
+
+  var p1 = new my.ui.Yeah;
+  p1.render(this.getElement());
+
+  var p2 = new my.ui.Ohh;
+  p2.render(this.getElement());
+
+  this.printYell(p1);
+  this.printYell(p2);
+};
+
+/**
+ * @param {my.Yellable} comp
+ */
+my.Detail.prototype.printYell = function (comp) {
+  var dh = this.getDomHelper();
+  dh.append(/** @type {!Node} */(this.getElement()),
+      dh.createDom('p', null, comp.yeah() + '!!!!!!!!!!'));
+};
+
+
+
+// @interface try out
+
+my.ui = {};
+
+/**
+ * @constructor
+ * @extends my.Component
+ * @implements my.Yellable
+ */
+my.ui.Yeah = function () {
+  goog.base(this);
+
+  this.data = {};
+};
+goog.inherits(my.ui.Yeah, my.Component);
+
+my.ui.Yeah.prototype.yeah = function () {
+  return 'yeah';
+};
+
+/**
+ * @constructor
+ * @extends my.Component
+ * @implements my.Yellable
+ */
+my.ui.Ohh = function () {
+  goog.base(this);
+
+  this.data = {};
+};
+goog.inherits(my.ui.Ohh, my.Component);
+
+my.ui.Ohh.prototype.yeah = function () {
+  return 'ohhh';
 };
